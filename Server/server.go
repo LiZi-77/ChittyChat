@@ -62,7 +62,7 @@ func (s *Server) Join(pconn *pb.Connect, stream pb.ChittyChat_JoinServer) error 
 	var ctx context.Context
 	
 	next_timestamp, _ := strconv.Atoi(msg.GetTimestamp())
-	
+
 	conn := &Connection{
 		stream: stream,
 		id:     pconn.User.Id,
@@ -96,8 +96,9 @@ func (s *Server) Broadcast(ctx context.Context, msg *pb.Message) (*pb.Close, err
 			if conn.active {
 				err := conn.stream.Send(msg)
 				 
-				fmt.Printf("[%v] sends a message to [%v] (Lamport time: %v) \n", msg.Message, conn.id, s.local_timestamp)
-				log.Println("Broadcasting message: ", msg.Message, " -- (Lamport time: ", s.local_timestamp, ")")
+				fmt.Printf("Broadcasting message: [%v] (Lamport time: %v) \n", msg.Message, s.local_timestamp)
+				
+				log.Println("Broadcasting message: ", msg.Message, "(Lamport time: ", s.local_timestamp, ")")
 				s.local_timestamp = GetTimestamp(s, s.local_timestamp)
 				
 
