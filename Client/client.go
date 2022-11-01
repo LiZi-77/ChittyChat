@@ -49,7 +49,7 @@ func init() {
 
 func connect(user *pb.User) error {
 	var streamError error
-	fmt.Println(*user)
+	//fmt.Println(*user)
 	stream, err := participant.Join(context.Background(), &pb.Connect{
 		User:   user,
 		Active: true,
@@ -72,7 +72,6 @@ func connect(user *pb.User) error {
 				break
 			}
 
-			//         fmt.Printf("%v : %s\n", msg.User.DisplayName, msg.Message)
 			fmt.Printf("%v \n", msg.Message)
 		}
 	}(stream)
@@ -89,7 +88,7 @@ func main() {
 	ts := time.Now()
 	done := make(chan int)
 
-	name := flag.String("N", "Anonymous", "")
+	name := flag.String("UserName", "Anonymous", "")
 	flag.Parse()
 
 	id := sha256.Sum256([]byte(ts.String() + *name))
@@ -114,14 +113,16 @@ func main() {
 			}
 
 			if msg.Message == "Join" && !isConnected {
-				fmt.Printf("Message = Join: %v", msg.Message)
+				//fmt.Printf("Message = Join: %v", msg.Message)
 				conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 				if err != nil {
 					log.Fatalf("Could not connect to server %v", err)
 				}
 				defer conn.Close()
+
+				//add new participants
 				participant = pb.NewChittyChatClient(conn)
-				isConnected = true
+				isConnected = true	//change tag
 				connect(user)
 				wait.Add(1)
 			} else {
@@ -130,16 +131,16 @@ func main() {
 						isConnected = false
 						_, err3 = participant.Leave(context.Background(), msg)
 						if err3 != nil {
-							fmt.Printf("Error leaving Chitty-Chat: %v", err3)
+							fmt.Printf("leaving chat error: %v", err3)
 							break
-						} else {
-							//					break
-						}
+						} else {}
 					} else {
+						//publishing message
 						_, err3 = participant.Publish(context.Background(), msg)
+						
 					}
 					if err3 != nil {
-						fmt.Printf("Error sending this message: %v", err3)
+						fmt.Printf("sending message error %v", err3)
 						break
 					}
 				}
@@ -147,7 +148,7 @@ func main() {
 
 			_, err := error(nil), error(nil)
 			if err != nil {
-				fmt.Printf("Error sending this message: %v", err)
+				fmt.Printf("sending message error: %v", err)
 				break
 			}
 		}
