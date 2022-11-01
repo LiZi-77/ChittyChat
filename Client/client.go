@@ -85,7 +85,6 @@ func main() {
 	var isConnected bool
 	isConnected = false
 	err3 := error(nil)
-	//var dummymsg *pb.Close
 
 	ts := time.Now()
 	done := make(chan int)

@@ -209,4 +209,3 @@ func main() {
 	pb.RegisterChittyChatServer(grpcServer, server)
 	grpcServer.Serve(listener)
 }
-
