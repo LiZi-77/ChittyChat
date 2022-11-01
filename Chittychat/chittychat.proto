@@ -1,0 +1,32 @@
+
+syntax = "proto3";
+
+option go_package = "src/Chitty-Chat/chittychat";
+
+package chittychat;
+
+service ChittyChat {
+    rpc Join(Connect) returns (stream Message);
+    rpc Leave(Message) returns (Close);
+    rpc Broadcast(Message) returns (Close);
+    rpc Publish(Message) returns (Close);
+}
+
+message User {
+    string id = 1;
+    string display_name = 2;
+}
+
+message Message {
+    string id = 1;
+    User user = 2;
+    string message = 3;
+    string timestamp = 4;
+}
+
+message Connect {
+    User user = 1;
+    bool active = 2;
+}
+
+message Close{}
