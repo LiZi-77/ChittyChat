@@ -116,8 +116,6 @@ func (s *Server) Broadcast(ctx context.Context, msg *pb.Message) (*pb.Close, err
 		close(done)
 	}()
 
-	//maybe timestamp++ here?
-
 	<-done
 
 	return &pb.Close{}, nil
